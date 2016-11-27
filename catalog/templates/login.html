@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>World Universities</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/bootstrap.min.css')}}"/>
+        <script src="{{url_for('static',filename='js/jquery.min.js')}}"></script>
+        <script src="{{url_for('static',filename='js/bootstrap.min.js')}}"></script>
+        <script src="//apis.google.com/js/platform.js?onload=start" async defer></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="{{url_for('home')}}">World Universities</a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container" style="margin-top:80px;">
+            <h1>Login</h1>
+            <div class="row" id="loginButtons">
+                <div class="col-sm-3">
+                    <b>Select Login Method:</b>
+                </div>
+                <div class="col-sm-9">
+                    <div id="signInButton">
+                        <span class="g-signin"
+                data-scope="openid email"
+                data-clientid="609432068261-d3apr88d8paq768svn4jsktkd7gdakoj.apps.googleusercontent.com"
+                data-redirecturi="postmessage"
+                data-accesstype="offline"
+                data-cookiepolicy="single_host_origin"
+                data-callback="signInCallback"
+                data-approvalprompt="force">
+                        </span>
+                    </div>
+                    <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
+                        <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
+                    </fb:login-button>
+                </div>
+            </div>
+
+
+
+            <div id="results" style="display:none;">
+                <div class="alert alert-success">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  Login successful. Redirecting ...
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Google+ Login
+            function signInCallback(authResult) {
+                if (authResult['code']) {
+                    $('#loginButtons').hide();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/connect/google?state={{STATE}}',
+                        processData: false,
+                        contentType: 'application/octet-stream; charset=utf-8',
+                        data: authResult['code'],
+                        success: function(result) {
+                            if (result) {
+                                $('#results').show()
+                             setTimeout(function() {
+                              window.location.href = "/catalog";
+                             }, 2000);
+                            }
+                        }
+                    });
+                }
+                else if (authResult['error']) {
+                    console.log('There was an error: ' + authResult['error']);
+                }
+                else {
+                    $('#result').html('Failed to make a server side call. Check your configuration and console');
+                }
+            }
+            //Facebook login
+            window.fbAsyncInit = function() {
+                FB.init({
+                    appId      : '579575012194205',
+                    cookie     : true,  // enable cookies to allow the server to access the session
+                    xfbml      : true,  // parse social plugins on this page
+                    version    : 'v2.5' // use version 2.4
+                });
+            };
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+            // Here we run a very simple test of the Graph API after login is
+            // successful.  See statusChangeCallback() for when this call is made.
+            function sendTokenToServer() {
+                $('#loginButtons').hide();
+                var access_token = FB.getAuthResponse()['accessToken'];
+                FB.api('/me', function(response) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/connect/facebook?state={{STATE}}',
+                        processData: false,
+                        data: access_token,
+                        contentType: 'application/octet-stream; charset=utf-8',
+                        success: function(result) {
+                            // Handle or verify the server response if necessary.
+                            if (result) {
+                                $('#results').show()
+                                setTimeout(function() {
+                                    window.location.href = "/catalog";
+                                }, 2000);
+                            } 
+                            else {
+                                $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+                            }
+                        }
+                    });
+                });
+            }
+        </script>
+    </body>
+</html>

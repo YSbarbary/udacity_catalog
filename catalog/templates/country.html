@@ -1,0 +1,23 @@
+{% extends "layout-sidebar.html" %}
+{% block content %}
+
+<h1>Country: {{ country.name }} </h1>
+{% for u in universites %}
+    <div class="row">
+        <div class="col-sm-4">
+            <img src="{{url_for('showThumbnail',item_id=u.id)}}" width="150" height="80"/>
+        </div>
+        <div class="col-sm-8">
+            <b>{{u.university_name}}</b></br>
+            Common Abbreviation: {{u.common_abbreviation}}
+            </br>
+            <a href="{{url_for('catalogItem', 
+                item_id=u.id)}}">Read More</a>
+        </div>
+    </div>
+    </br>
+{% endfor %}
+  
+{% endblock %}
+
+    

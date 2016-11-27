@@ -1,0 +1,76 @@
+{% extends "layout-form.html" %}
+{% block content %}
+
+<h1>Edit Item</h1>
+<form class="form-horizontal" role="form" action="{{ url_for('editCatalogItem', item_id=item.id)}}" method='post' enctype="multipart/form-data">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="university_name">University Name:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="university_name" name="university_name" value="{{item.university_name}}" />
+        </div>
+    </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="country">Country:</label>
+            <div class="col-sm-10">
+                <select id="country" name="country" class="form-control">
+                {% for c in countries %}
+                    {% if c.id == item.country_id %}
+                        <option value="{{c.id}}" selected>{{c.name}}</option>
+                    {% else %}
+                        <option value="{{c.id}}">{{c.name}}</option>
+                    {% endif %}
+                {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="common_abbreviation">Common Abbreviation:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="common_abbreviation" name="common_abbreviation" value="{{item.common_abbreviation}}"/>
+                </div>
+            </div>
+           
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="year_established">Year Established:</label>
+                    <div class="col-sm-10">
+                        <div class='input-group date' id='datetimepicker1'>
+                            <input type='text' class="form-control" id="year_established" name="year_established" value="{{item.year_established.strftime('%d/%m/%Y')}}"/>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="description">Description:</label>
+                    <div class="col-sm-10">
+                        <textarea id="description" name="description" class="form-control" rows="10">{{item.description}}</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="files">Photos:</label>
+                    <div class="col-sm-10">
+                        <div class="radio">
+                          <label><input type="radio" name="photooption" value="keep" checked="checked">Keep Existing</label>
+                        </div>
+                        <div class="radio">
+                          <label><input type="radio" name="photooption" value="replace">Replace Photos</label>
+                        </div>
+                        <input type="file" multiple="" id="files" name="files[]" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </div>
+                </div>
+            </form>
+            <script type="text/javascript">
+            $(function () {
+                $('.input-group.date').datepicker({
+                    format: "dd/mm/yyyy"
+                });
+            });
+            </script>
+{% endblock %}

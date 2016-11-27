@@ -1,0 +1,31 @@
+{% extends "layout-sidebar.html" %}
+{% block content %}
+    <h1>Latest Added Universites</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-info">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  {{message}}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% for p in latest_universites %}
+    <div class="row">
+        <div class="col-sm-4">
+            <img src="{{url_for('showThumbnail',item_id=p.id)}}" width="150" height="80"/>
+        </div>
+        <div class="col-sm-8">
+            <b>{{p.university_name}}</b></br>
+            Common Abbreviation: {{p.common_abbreviation}}
+            </br>
+            <a href="{{url_for('catalogItem', 
+                item_id=p.id)}}">Read More</a>
+        </div>
+    </div>
+    </br>
+{% endfor %}
+{% endblock %}
+
+    

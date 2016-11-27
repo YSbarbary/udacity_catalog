@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>World Universities</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/bootstrap.min.css')}}"/>
+            <script src="{{url_for('static',filename='js/jquery.min.js')}}"></script>
+            <script src="{{url_for('static',filename='js/bootstrap.min.js')}}"></script>
+        </head>
+        <body>
+        {% include "header.html" %}
+            <div class="container" style="margin-top:80px;">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <h1>Countries</h1>
+                    {% for c in countries %}
+                        <a href="{{url_for('catalogCountry', 
+                            country_id=c.id)}}">{{c.name}}</a>
+                    </br>
+                    {% endfor %}
+                    <br/>
+                    <br/>
+                    <b>Feeds:</b>    
+                    <br/>
+                    <a href="{{url_for('catalogJSON')}}" target="_blank">JSON Feed</a>
+                    <br/>
+                    <a href="{{url_for('atom_feed')}}" target="_blank">Atom Feed</a>
+                </div>
+                <div class="col-sm-9">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
